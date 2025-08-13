@@ -77,7 +77,6 @@ chmod +x download_gb_efetch.sh
 ```bash
 是由于download_gb_efetch.sh文件是在Windows下保存的，里面的换行符是CRLF(\r\n)，而Linux/WSL需要的是LF(\n)。它让/usr/bin/env bash这一行读成了bash\r，所以报错找不到命令。
 ```
-#### 
 
 #### 使用dos2unix把CRLF换行转换成LF，就能在Linux中正常运行了,成功运行的截图见下，把下载好的所有gb文件放在lib文件夹下。
 ```bash
@@ -86,3 +85,5 @@ sudo apt-get install dos2unix
 dos2unix download_gb_efetch.sh
 ```
 <img src="images/3.png" alt="successful run" width="800">
+
+#### Step5 ----- 把这些gb文件中的蛋白序列提取出来，保存在一个csv中（各列分别是：Accession; G; L; N; M; P）
