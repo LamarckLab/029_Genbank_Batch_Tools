@@ -1,0 +1,2 @@
+# 029_Genbank_Batch_Tools
+a useful pipeline，用于批量下载Genbank文件，并从Genbank文件中提取蛋白序列
