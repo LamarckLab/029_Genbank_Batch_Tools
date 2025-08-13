@@ -70,3 +70,18 @@ chmod +x download_gb_efetch.sh
 ./download_gb_efetch.sh accession_list.txt . you@example.com
 # you@example.com → 你的邮箱（随便填一个格式正确的）
 ```
+#### 如果出现这个报错
+```bash
+/usr/bin/env: ‘bash\r’: No such file or directory
+```
+```bash
+是由于download_gb_efetch.sh文件是在Windows下保存的，里面的换行符是CRLF(\r\n)，而Linux/WSL需要的是LF(\n)。\r 就是那个 ^M 符号，它让 /usr/bin/env bash 这一行读成了 bash\r，所以报错找不到命令。
+```
+#### 
+
+#### 使用dos2unix把CRLF换行转换成LF，就能在Linux中正常运行了。
+```bash
+sudo apt-get update
+sudo apt-get install dos2unix
+dos2unix download_gb_efetch.sh
+```
