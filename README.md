@@ -114,16 +114,40 @@ def classify_protein(qual: Dict[str, list]) -> Optional[str]:
 
     if gene in TARGETS:
         return gene
-    if re.search(r"\bglycoprotein\b", product, flags=re.I) or re.search(r"\bG protein\b", product, flags=re.I):
+
+    # G 蛋白
+    if re.search(r"\bglycoprotein\b", product, flags=re.I) \
+            or re.search(r"\bG protein\b", product, flags=re.I) \
+            or (len(product.strip()) <= 3 and re.search(r"\bG\b", product, flags=re.I)):
         return "G"
-    if re.search(r"\bpolymerase\b", product, flags=re.I) or re.search(r"\brna-dependent rna polymerase\b", product,flags=re.I) or re.search(r"\blarge protein\b", product, flags=re.I) or re.search(r"\bL protein\b", product, flags=re.I):
+
+    # L 蛋白
+    if re.search(r"\bpolymerase\b", product, flags=re.I) \
+            or re.search(r"\brna-dependent rna polymerase\b", product, flags=re.I) \
+            or re.search(r"\blarge protein\b", product, flags=re.I) \
+            or re.search(r"\bL protein\b", product, flags=re.I) \
+            or (len(product.strip()) <= 3 and re.search(r"\bL\b", product, flags=re.I)):
         return "L"
-    if re.search(r"\bnucleoprotein\b", product, flags=re.I) or re.search(r"\bnucleocapsid protein\b", product, flags=re.I) or re.search(r"\bN protein\b", product, flags=re.I):
+
+    # N 蛋白
+    if re.search(r"\bnucleoprotein\b", product, flags=re.I) \
+            or re.search(r"\bnucleocapsid protein\b", product, flags=re.I) \
+            or re.search(r"\bN protein\b", product, flags=re.I) \
+            or (len(product.strip()) <= 3 and re.search(r"\bN\b", product, flags=re.I)):
         return "N"
-    if re.search(r"\bmatrix protein\b", product, flags=re.I) or re.search(r"\bM protein\b", product, flags=re.I):
+
+    # M 蛋白
+    if re.search(r"\bmatrix protein\b", product, flags=re.I) \
+            or re.search(r"\bM protein\b", product, flags=re.I) \
+            or (len(product.strip()) <= 3 and re.search(r"\bM\b", product, flags=re.I)):
         return "M"
-    if re.search(r"\bphosphoprotein\b", product, flags=re.I) or re.search(r"\bP protein\b", product, flags=re.I):
+
+    # P 蛋白
+    if re.search(r"\bphosphoprotein\b", product, flags=re.I) \
+            or re.search(r"\bP protein\b", product, flags=re.I) \
+            or (len(product.strip()) <= 3 and re.search(r"\bP\b", product, flags=re.I)):
         return "P"
+
     return None
 
 def get_translation(record, feature) -> Optional[str]:
