@@ -1,5 +1,7 @@
 ## 一套小流程，用于批处理Genbank文件，并提取蛋白序列
 
+### 开发环境: Win10, WSL
+
 #### Step1 ----- 在NCBI Virus上Download所需accession，得到一个.acc文件
 
 <img src="images/1.png" alt="NCBI Virus Accession_download" width="800">
@@ -58,7 +60,7 @@ done < "$ACC_FILE"
 echo "下载完成"
 ```
 
-#### Step3 ----- 在wsl中给脚本添加可执行权限
+#### Step3 ----- 给脚本添加可执行权限
 ```bash
 chmod +x download_gb_efetch.sh
 ```
