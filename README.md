@@ -79,9 +79,10 @@ chmod +x download_gb_efetch.sh
 ```
 #### 
 
-#### 使用dos2unix把CRLF换行转换成LF，就能在Linux中正常运行了。
+#### 使用dos2unix把CRLF换行转换成LF，就能在Linux中正常运行了,成功运行的截图见下。
 ```bash
 sudo apt-get update
 sudo apt-get install dos2unix
 dos2unix download_gb_efetch.sh
 ```
+<img src="images/3.png" alt="successful run" width="800">
