@@ -5,4 +5,7 @@
 <img src="images/1.png" alt="NCBI Virus Accession_download" width="800">
 <img src="images/2.png" alt="accession.acc" width="800">
 
+#### Step2 ----- 将accession列表命名为accession_list.txt，编写批处理脚本，用于自动下载
+
+
 
