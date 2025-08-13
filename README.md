@@ -75,7 +75,7 @@ chmod +x download_gb_efetch.sh
 /usr/bin/env: ‘bash\r’: No such file or directory
 ```
 ```bash
-是由于download_gb_efetch.sh文件是在Windows下保存的，里面的换行符是CRLF(\r\n)，而Linux/WSL需要的是LF(\n)。\r 就是那个 ^M 符号，它让 /usr/bin/env bash 这一行读成了 bash\r，所以报错找不到命令。
+是由于download_gb_efetch.sh文件是在Windows下保存的，里面的换行符是CRLF(\r\n)，而Linux/WSL需要的是LF(\n)。它让/usr/bin/env bash这一行读成了bash\r，所以报错找不到命令。
 ```
 #### 
 
