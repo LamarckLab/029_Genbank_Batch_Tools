@@ -113,31 +113,18 @@ def classify_protein(qual: Dict[str, list]) -> Optional[str]:
     product = qget("product").strip().lower()
 
     if gene in TARGETS:
-    return gene
-
-# G 蛋白
-if re.search(r"\bglycoprotein\b", product, flags=re.I) or re.search(r"\bG protein\b", product, flags=re.I):
-    return "G"
-
-# L 蛋白
-if re.search(r"\bpolymerase\b", product, flags=re.I) or re.search(r"\brna-dependent rna polymerase\b", product, flags=re.I) \
-   or re.search(r"\blarge protein\b", product, flags=re.I) or re.search(r"\bL protein\b", product, flags=re.I):
-    return "L"
-
-# N 蛋白
-if re.search(r"\bnucleoprotein\b", product, flags=re.I) or re.search(r"\bnucleocapsid protein\b", product, flags=re.I) \
-   or re.search(r"\bN protein\b", product, flags=re.I):
-    return "N"
-
-# M 蛋白
-if re.search(r"\bmatrix protein\b", product, flags=re.I) or re.search(r"\bM protein\b", product, flags=re.I):
-    return "M"
-
-# P 蛋白
-if re.search(r"\bphosphoprotein\b", product, flags=re.I) or re.search(r"\bP protein\b", product, flags=re.I):
-    return "P"
-
-return None
+        return gene
+    if ("glycoprotein" in product) or re.search(r"\bG protein\b", product, flags=re.I):
+        return "G"
+    if ("polymerase" in product) or ("rna-dependent rna polymerase" in product) or ("large protein" in product) or re.search(r"\bL protein\b", product, flags=re.I):
+        return "L"
+    if ("nucleoprotein" in product) or ("nucleocapsid protein" in product) or re.search(r"\bN protein\b", product, flags=re.I):
+        return "N"
+    if ("matrix protein" in product) or re.search(r"\bM protein\b", product, flags=re.I):
+        return "M"
+    if ("phosphoprotein" in product) or re.search(r"\bP protein\b", product, flags=re.I):
+        return "P"
+    return None
 
 def get_translation(record, feature) -> Optional[str]:
     """获取 CDS 的氨基酸序列。优先用 translation；缺失则翻译核酸。"""
