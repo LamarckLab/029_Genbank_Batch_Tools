@@ -62,3 +62,9 @@ echo "下载完成"
 ```bash
 chmod +x download_gb_efetch.sh
 ```
+
+#### Step4 ----- 根据accession_list，自动下载
+```bash
+./download_gb_efetch.sh accession_list.txt . you@example.com
+# you@example.com → 你的邮箱（随便填一个格式正确的）
+```
