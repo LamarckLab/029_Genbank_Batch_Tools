@@ -86,7 +86,7 @@ dos2unix download_gb_efetch.sh
 ```
 <img src="images/3.png" alt="successful run" width="800">
 
-#### Step5 ----- 把这些gb文件中的蛋白序列提取出来，保存在一个csv中（各列分别是：Accession; G; L; N; M; P）
+#### Step5 ----- 把这些gb文件中的蛋白序列提取出来，保存在一个csv中（各列分别是：Accession; G; L; N; M; P）,详见Protein_extract.py
 ```python
 # extract_rhabdo_proteins_to_csv_windows.py
 # 从 GenBank 批量提取 Rhabdoviridae 的 G/L/N/M/P 蛋白氨基酸序列
