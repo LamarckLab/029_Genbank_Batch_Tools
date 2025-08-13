@@ -1,0 +1,146 @@
+# extract_rhabdo_proteins_to_csv_windows.py
+# 从 GenBank 批量提取 Rhabdoviridae 的 G/L/N/M/P 蛋白氨基酸序列
+# 输出 CSV 列顺序：accession(带版本号), G, L, N, M, P
+
+import csv
+import re
+from pathlib import Path
+from typing import Dict, Optional
+from Bio import SeqIO
+
+# === 输入/输出目录 ===
+BASE_DIR = r"C:\Users\Lamarck\Desktop\test\gb_lib"
+
+TARGETS = ["G", "L", "N", "M", "P"]
+
+def classify_protein(qual: Dict[str, list]) -> Optional[str]:
+    """根据 gene / product 判断该 CDS 属于哪一个蛋白（G/L/N/M/P）。"""
+    def qget(key):
+        v = qual.get(key, [])
+        return v[0] if v else ""
+
+    gene = qget("gene").strip().upper()
+    product = qget("product").strip().lower()
+
+    if gene in TARGETS:
+        return gene
+
+    # G 蛋白
+    if re.search(r"\bglycoprotein\b", product, flags=re.I) \
+            or re.search(r"\bG protein\b", product, flags=re.I) \
+            or (len(product.strip()) <= 3 and re.search(r"\bG\b", product, flags=re.I)):
+        return "G"
+
+    # L 蛋白
+    if re.search(r"\bpolymerase\b", product, flags=re.I) \
+            or re.search(r"\brna-dependent rna polymerase\b", product, flags=re.I) \
+            or re.search(r"\blarge protein\b", product, flags=re.I) \
+            or re.search(r"\bL protein\b", product, flags=re.I) \
+            or (len(product.strip()) <= 3 and re.search(r"\bL\b", product, flags=re.I)):
+        return "L"
+
+    # N 蛋白
+    if re.search(r"\bnucleoprotein\b", product, flags=re.I) \
+            or re.search(r"\bnucleocapsid protein\b", product, flags=re.I) \
+            or re.search(r"\bN protein\b", product, flags=re.I) \
+            or (len(product.strip()) <= 3 and re.search(r"\bN\b", product, flags=re.I)):
+        return "N"
+
+    # M 蛋白
+    if re.search(r"\bmatrix protein\b", product, flags=re.I) \
+            or re.search(r"\bM protein\b", product, flags=re.I) \
+            or (len(product.strip()) <= 3 and re.search(r"\bM\b", product, flags=re.I)):
+        return "M"
+
+    # P 蛋白
+    if re.search(r"\bphosphoprotein\b", product, flags=re.I) \
+            or re.search(r"\bP protein\b", product, flags=re.I) \
+            or (len(product.strip()) <= 3 and re.search(r"\bP\b", product, flags=re.I)):
+        return "P"
+
+    return None
+
+def get_translation(record, feature) -> Optional[str]:
+    """获取 CDS 的氨基酸序列。优先用 translation；缺失则翻译核酸。"""
+    q = feature.qualifiers
+    if "translation" in q and q["translation"]:
+        return "".join(q["translation"]).replace(" ", "").replace("\n", "")
+    try:
+        dna = feature.extract(record.seq)
+        codon_start = int(q.get("codon_start", [1])[0])
+        transl_table = int(q.get("transl_table", [1])[0])
+        if codon_start > 1:
+            dna = dna[codon_start - 1 :]
+        aa = str(dna.translate(table=transl_table, to_stop=True))
+        return aa.replace("*", "")
+    except Exception:
+        return None
+
+def get_accession_with_version(record) -> str:
+    """优先返回 record.id（通常带版本号），否则尝试 VERSION 字段。"""
+    acc = record.id.strip()
+    if acc and re.search(r"\.\d+$", acc):
+        return acc
+    version = record.annotations.get("sequence_version")
+    if version:
+        return f"{record.name}.{version}"
+    return acc or "unknown"
+
+def extract_from_gb(gb_path: Path) -> Dict[str, str]:
+    """从单个 GenBank 文件提取 accession(带版本号) 和五种目标蛋白序列。"""
+    results = {k: "" for k in TARGETS}
+    accession = None
+
+    for record in SeqIO.parse(str(gb_path), "genbank"):
+        accession = get_accession_with_version(record)
+        for feat in record.features:
+            if feat.type != "CDS":
+                continue
+            kind = classify_protein(feat.qualifiers)
+            if not kind:
+                continue
+            aa = get_translation(record, feat)
+            if not aa:
+                continue
+            if len(aa) > len(results[kind]):
+                results[kind] = aa
+        break
+
+    if accession is None:
+        accession = gb_path.stem
+    results["accession"] = accession
+    return results
+
+def main():
+    base = Path(BASE_DIR)
+    if not base.exists():
+        raise SystemExit(f"目录不存在：{base}")
+
+    gb_files = sorted([p for p in base.iterdir() if p.suffix.lower() in (".gb", ".gbk")])
+    if not gb_files:
+        raise SystemExit(f"未找到 .gb/.gbk 文件：{base}")
+
+    out_csv = base / "rhabdo_proteins.csv"
+    header = ["accession", "G", "L", "N", "M", "P"]
+
+    total = len(gb_files)
+    print(f"发现 {total} 个 GenBank 文件，开始处理…")
+
+    with out_csv.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=header)
+        writer.writeheader()
+        for i, gb in enumerate(gb_files, 1):
+            try:
+                row = extract_from_gb(gb)
+            except Exception as e:
+                print(f"[警告] 解析失败：{gb.name} -> {e}")
+                row = {"accession": gb.stem, "G": "", "L": "", "N": "", "M": "", "P": ""}
+            writer.writerow({k: row.get(k, "") for k in header})
+            if i % 20 == 0 or i == total:
+                print(f"[进度] {i}/{total}")
+
+    print(f"完成！结果已保存到：{out_csv}")
+
+if __name__ == "__main__":
+    main()
+
