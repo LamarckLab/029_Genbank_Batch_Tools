@@ -239,7 +239,7 @@ if __name__ == "__main__":
 #### Step6 ----- 把需要分析的蛋白留下，整理成这样的格式（accession + protein + protein），命名为Accession_G_L.xlsx
 <img src="images/4.png" alt="Accession_G_L" width="800">
 
-#### Step7 ----- 用一个Python脚本把G、L分别提取成fasta文件的格式
+#### Step7 ----- 用一个Python脚本把G、L分别提取成fasta文件的格式，详见fasta_extract.py
 ```python
 import re
 from pathlib import Path
