@@ -237,3 +237,4 @@ if __name__ == "__main__":
 ```
 
 #### Step6 ----- 把需要分析的蛋白留下，整理成这样的格式（accession + protein + protein），命名为Accession_G_L.xlsx
+<img src="images/4.png" alt="Accession_G_L" width="800">
