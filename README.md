@@ -126,6 +126,7 @@ def classify_protein(qual: Dict[str, list]) -> Optional[str]:
             or re.search(r"\brna-dependent rna polymerase\b", product, flags=re.I) \
             or re.search(r"\blarge protein\b", product, flags=re.I) \
             or re.search(r"\bL protein\b", product, flags=re.I) \
+            or re.search(r"\bRdRp\b", product, flags=re.I) \
             or (len(product.strip()) <= 3 and re.search(r"\bL\b", product, flags=re.I)):
         return "L"
 
