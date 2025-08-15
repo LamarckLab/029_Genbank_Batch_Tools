@@ -1,6 +1,5 @@
 ## 一套小流程，用于批处理Genbank文件，并提取蛋白序列 &nbsp; &nbsp; &nbsp; 2025-08-13
 ---
-
 ### 环境: Win10, WSL
 
 #### Step1 ----- 在NCBI Virus上Download所需accession，得到一个.acc文件
